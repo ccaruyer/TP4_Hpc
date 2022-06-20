@@ -21,8 +21,7 @@ void writePnm(std::ostream &os, int width, int height,
 }
 
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char ** argv){
     // check command line arguments
     if (argc!=4 and argc!=3)
     {
@@ -43,23 +42,26 @@ int main(int argc, char ** argv)
 
     // compute image data
     // TODO
-#pragma omp parallel for num_threads(3)
-    for (int x=0; x<width; x++){
-     for (int y=0; y<height; y++)
-        {
-            //std::cout << "Thread id = " << omp_get_thread_num() << std::endl;
-            // diagonal gradient
-            // TODO remove that
-            double t = (x+y) / sqrt(width*width + height*height);
-            double f = 2.0;
-            ind(x,y) = 127.0 * (1 + cos(2.0*M_PI*f*t));
+    #pragma omp parallel for  num_threads(3)
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+                //#pragma omp critical
+                //std::cout << "Thread id = " << omp_get_thread_num() << std::endl;
+                // diagonal gradient
+                // TODO remove that
+                //double t = (x+y) / sqrt(width*width + height*height);
+                //double f = 2.0;
+                //ind(x,y) = 127.0 * (1 + cos(2.0*M_PI*f*t));
 
-            // put the color of the thread
-            // TODO
-            //#pragma omp barrier
-            ind(x,y) = omp_get_thread_num();
+                // put the color of the thread
+                // TODO
+                //#pragma omp barrier
+                #pragma omp critical
+                ind(x, y) = 127.0 * omp_get_thread_num();
         }
     }
+
+
 
     // stop chrono
     double endTime = omp_get_wtime();
