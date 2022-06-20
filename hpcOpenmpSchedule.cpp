@@ -48,9 +48,11 @@ int main(int argc, char ** argv){
 
         //#pragma omp parallel for num_threads(3)
         //#pragma omp parallel for schedule(static, 50) num_threads(3)
+        //#pragma omp parallel for collapse(2) schedule(static, 50) num_threads(3)
+        #pragma omp parallel for collapse(2) schedule(static, 32) num_threads(3)
         for (int x = 0; x < width; x++) {
             //#pragma omp parallel for num_threads(3)
-            #pragma omp parallel for schedule(static, 50) num_threads(3)
+            //#pragma omp parallel for schedule(static, 50) num_threads(3)
             for (int y = 0; y < height; y++) {
                 //#pragma omp critical
                 //std::cout << "Thread id = " << omp_get_thread_num() << std::endl;
