@@ -37,15 +37,21 @@ int main(int argc, char ** argv){
     auto ind = [&data,width](int xx, int yy)->unsigned char&
     { return data[yy*width+xx]; };
 
-    // start chrono
-    double startTime = omp_get_wtime();
+
 
     // compute image data
     // TODO
 
-    for (int x = 0; x < width; x++) {
-        #pragma omp parallel for  schedule(static, 50) num_threads(3)
-        for (int y = 0; y < height; y++) {
+    for(int b =0; b <10; b++) {
+        // start chrono
+        double startTime = omp_get_wtime();
+
+        //#pragma omp parallel for num_threads(3)
+        //#pragma omp parallel for schedule(static, 50) num_threads(3)
+        for (int x = 0; x < width; x++) {
+            //#pragma omp parallel for num_threads(3)
+            #pragma omp parallel for schedule(static, 50) num_threads(3)
+            for (int y = 0; y < height; y++) {
                 //#pragma omp critical
                 //std::cout << "Thread id = " << omp_get_thread_num() << std::endl;
                 // diagonal gradient
@@ -57,24 +63,26 @@ int main(int argc, char ** argv){
                 // put the color of the thread
                 // TODO
                 //#pragma omp barrier
-                #pragma omp critical
+#pragma omp critical
                 ind(x, y) = 127.0 * omp_get_thread_num();
+            }
         }
+        // stop chrono
+        double endTime = omp_get_wtime();
+        std::cout << argv[1] << ' ' << argv[2] << ' ' << (endTime - startTime)*1000 << std::endl;
+
+        // write image in a file
+        if (argc==4)
+        {
+            std::ofstream ofs(argv[3]);
+            writePnm(ofs, width, height, data);
+        }
+
+
     }
 
 
 
-    // stop chrono
-    double endTime = omp_get_wtime();
-    std::cout << argv[1] << ' ' << argv[2] << ' ' << endTime - startTime
-        << std::endl;
-
-    // write image in a file
-    if (argc==4)
-    {
-        std::ofstream ofs(argv[3]);
-        writePnm(ofs, width, height, data);
-    }
 
     return 0;
 }
