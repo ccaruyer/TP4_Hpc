@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/clair/Documents/Cours/M1I2L/HPC/TP4/hpcOpenmpSchedule.cpp
+cmath
+-
+fstream
+-
+iostream
+-
+thread
+-
+vector
+-
+omp.h
+-
+
